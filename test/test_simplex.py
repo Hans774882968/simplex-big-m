@@ -1,3 +1,4 @@
+import pytest
 import numpy as np
 from src.simplex import Simplex
 from src.big_m import BigM
@@ -43,6 +44,13 @@ def test_directly_input_big_m_case2():
     res_x, res_val = simplex.solve()
     assert res_x == [0, 2.5, 1.5, 0, 0, 0, 0]
     assert res_val == 1.5
+    assert np.array_equal(simplex.obj_func_coeff, np.array([-3, 0, 1, 0, 0, BigM(-1, 0), BigM(-1, 0)]))
+    assert np.array_equal(simplex.constraints_coeff, np.array([
+        [3, 0, 2, 1, 1, -1, 0],
+        [-2, 1, -1, 0, -1, 1, 0],
+        [6, 0, 4, 0, 3, -3, 1],
+    ], dtype=np.float))
+    assert np.array_equal(simplex.b, np.array([3, 1, 6], dtype=np.float))
 
 
 def test_directly_input_big_m_case3():
@@ -57,3 +65,15 @@ def test_directly_input_big_m_case3():
     res_x, res_val = simplex.solve()
     assert res_x == [0, 2.5, 1.5, 0, 0, 0, 0]
     assert res_val == 1.5
+
+
+def test_unbounded_problem():
+    c = np.array([2, 3, 0])
+    a = np.array([
+        [4, 0, 1],
+    ], dtype=np.float)
+    b = np.array([16], dtype=np.float)
+    simplex = Simplex(c, a, b)
+    with pytest.raises(ValueError) as e_info:
+        simplex.solve()
+    assert 'This linear programming problem is unbounded' in str(e_info.value)

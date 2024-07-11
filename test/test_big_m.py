@@ -1,6 +1,13 @@
 from src.big_m import BigM
 
 
+def test_unary():
+    a1 = BigM(-114, -514)
+    assert -a1 == BigM(114, 514)
+    a2 = BigM(0, float('inf'))
+    assert -a2 == BigM(0, float('-inf'))
+
+
 def test_big_m_cmp():
     a = BigM(1, 2)
     b = BigM(3, 1)
