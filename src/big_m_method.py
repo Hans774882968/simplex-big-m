@@ -3,7 +3,7 @@ import sys
 import os
 import numpy as np
 from numpy import ndarray
-from big_m import BigM
+from big_m import BigM, is_big_m_like
 from simplex import Simplex
 from utils import get_unit_vector_to_idx, get_ith_unit_vector
 from consts import Operator
@@ -66,9 +66,12 @@ class BigMMethod(Simplex):
         if self.is_debug:
             return res_x, res_val
         res_x_artificial_part = res_x[self.artificial_var_idx:]
+        no_sol_err = ValueError('This linear programming problem has no solution')
         for v in res_x_artificial_part:
-            if v != 0:
-                raise ValueError('This linear programming problem has no solution')
+            if abs(v) >= 1e-14:
+                raise no_sol_err
+        if is_big_m_like(res_val) and abs(res_val.a) >= 1e-14:
+            raise no_sol_err
         return res_x[:self.slack_variable_idx], res_val
 
 
