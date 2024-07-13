@@ -257,7 +257,7 @@ def test_big_m_case13():
         [4, 3, 2, 0, 3, 1, 0, 1],
     ], dtype=np.float)
     b = np.array([100] * 3, dtype=np.float)
-    operators = [Operator.EQ, Operator.EQ]
+    operators = [Operator.EQ, Operator.EQ, Operator.EQ]
     simplex = BigMMethod(c, a, b, operators)
     assert simplex.slack_variable_idx == 8
     assert simplex.artificial_var_idx == 8
@@ -327,8 +327,8 @@ def test_big_m_case15():
     x14+x23+x32+x41 >= 12
     看下面代码的 a 矩阵，比较优美，分别由4*4~1*1的上三角阵构成。
     解得x11 = 5, x14 = 10, x31 = 8, x32 = 2，这表示第1个月租1个月合同500平，租4个月合同1000平，
-    第3个月租1个月合同800平，租2个月合同200平。于是第1~4个月分别覆盖到500 + 1000，1000，1000+800+200，
-    1000平，恰好都等于每个月所需仓库面积。
+    第3个月租1个月合同800平，租2个月合同200平。于是第1~4个月分别覆盖到500 + 1000，1000，1000 + 800 + 200，
+    1000 + 200平，恰好都等于每个月所需仓库面积。
     '''
     c = np.array([-2800, -4500, -6000, -7300, -2800, -4500, -6000, -2800, -4500, -2800], dtype=np.float)
     a = np.array([
@@ -356,7 +356,7 @@ def test_big_m_case16_method1():
     方法一：设产品1经过A工序的数量为x1~x3，经过B工序的数量为x4~x5，则有x1+x2+x3=x4+x5。
     同理设x6~x10，有x6+x7=x8，x9=x10。目标函数：获利=(售价-原料费)*产品总数-设备加工费。所以
     max((x1 + x2) + 1.65 * x8 + 2.3 * x9 - pc[0] * 5 * x1 - pc[1] * 7 * x2 - pc[2] * 6 * x3
-    -pc[3] * 4 * x4 - pc[4] * 7 * x5 - pc[0] * 10 * x6 - pc[1] * 9 * x7 - pc[2] * 8 * x8
+    - pc[3] * 4 * x4 - pc[4] * 7 * x5 - pc[0] * 10 * x6 - pc[1] * 9 * x7 - pc[2] * 8 * x8
     - pc[1] * 12 * x9 - pc[3] * 11 * x10)
     约束条件：（1）不超过设备有效台时。（2）上面3个等式。
     5 * x1 + 10 * x6 <= 6000

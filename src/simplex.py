@@ -23,6 +23,14 @@ class Simplex:
         self.is_debug = is_debug
         self.n = len(self.obj_func_coeff)
         self.m = len(self.constraints_coeff)
+        self._check_problem_shape()
+
+    def _check_problem_shape(self):
+        m, n = self.m, self.n
+        if m and len(self.constraints_coeff[0]) != n:
+            raise ValueError('Size error on constraints coefficient matrix')
+        if len(self.b) != m:
+            raise ValueError('Size error on the RHS of the constraints')
 
     def _get_initial_basis(self) -> List[int]:
         m = self.m

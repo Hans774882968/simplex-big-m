@@ -18,11 +18,19 @@ class BigMMethod(Simplex):
             operators: List[str],
             should_print_table: bool = False,
             is_debug: bool = False) -> None:
+        self.operators = operators
         self.slack_variable_idx = len(obj_func_coeff)
         obj_func_coeff, constraints_coeff = self._to_standard_model(obj_func_coeff, constraints_coeff, operators)
         self.artificial_var_idx = len(obj_func_coeff)
         obj_func_coeff, constraints_coeff = self._add_artificial_variables(obj_func_coeff, constraints_coeff)
         super().__init__(obj_func_coeff, constraints_coeff, b, should_print_table, is_debug)
+        self._check_problem_shape()
+
+    def _check_problem_shape(self):
+        m = self.m
+        if len(self.operators) != m:
+            raise ValueError('Size error on the RHS of the constraints')
+        super()._check_problem_shape()
 
     def _to_standard_model(
             self,
